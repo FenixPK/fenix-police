@@ -3,7 +3,7 @@
 This mod enables AI police dispatch/wanted levels and replaces the base GTA V police dispatch system with something less punishing and more realistic. It is highly configurable and all configuration and code is thoroughly commented
 to facilitate end-user modifcation. You could configure this to be even more brutal than base-game if you wanted, or even easier. The idea was to have AI police for a small RP server just for your friends where having a bunch of player police was not possible. 
 
-FEATURES:
+**FEATURES:**
 - Config option to only enable AI police if player police are not online. You can configure the number of player police required. And set whether they have to be onDuty to count toward the total. 
 - Custom police loadouts per unit spawned, loadouts are randomized and include a spawnChance weighting to make them more or less likely. 
 - Custom police units per "zone", by default separated into "jurisdictions" (aka regions) Los Santos, Paleto Bay, Sandy Shores, or Countryside. Includes a spawnChance weighting to make each unit more or less likely. 
@@ -21,7 +21,8 @@ FEATURES:
 - Police are spawned serverside, then their networkIDs are sent back to the client that requested police so they can be controlled and maintained. They should not migrate to other clients, and the distance culling is high so they can still be controlled from far away. This means units will be properly sycned across clients and you will see police chasing other players. 
 - Stolen police vehicles will not de-spawn if occupied by a player at the time the script tries to clean them up (due to peds being dead, peds being far away, or losing wanted stars). So they wont disappear if you manage to steal one mid chase. However, they will never despawn if this happens. I plan to add logic that removes them once the player abandons them for a certain time/distance in the future. 
 
-REQUIREMENTS:
+**REQUIREMENTS:**
+
 This mod requires QBCore for: Notifications, counting players with Police jobs online, checking near vehicles (because the native function for this was giving me trouble), and checking if isDying or inLastStand and cancelling wanted levels. 
 In theory, it could be removed if you switch the near vehicle check to the native and remove notifications and last stand logic.
 
@@ -30,7 +31,7 @@ allow for AI police and also control how they spawn and behave.
 
 I will keep adding to this mod as I have time and inspiration, I've got some big ideas. 
 
-KNOWN ISSUES:
+**KNOWN ISSUES:**
 - Police vehicles stolen by players will never despawn if they are occupied by a player at the time the script would usually delete the vehicle (when losing wanted level, or if the peds for that vehicle are too far away or dead).
 - ~Despite everything I've tried sometimes the server fails to TaskWarpPedIntoVehicle properly and some vehicles will be missing some officers. Sometimes all officers fail to warp and a vehicle just sits empty. The far-away timer will remove the unit and allow a replacement to spawn after a certain time... It isn't perfect, but it works. This is rare in my experience but has been noticeable. The only other way I found to work around this was to spawn the units clientside but that opens up other issues. ~ This has been rectified by checking if a driver occupies the vehicle, if no driver was warped in it deletes the vehicle entity and will try spawning another unit the next cycle. I optimized this by checking after the first ped attempt. I've found if the first one fails ALL the peds will fail to warp so there is no point in trying to spawn and warp the remaining officers into the vehicle. 
 
