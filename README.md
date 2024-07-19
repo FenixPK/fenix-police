@@ -26,10 +26,6 @@ to facilitate end-user modifcation. You could configure this to be even more bru
 This mod requires QBCore for: Notifications, counting players with Police jobs online, checking near vehicles (because the native function for this was giving me trouble), and checking if isDying or inLastStand and cancelling wanted levels. 
 In theory, it could be removed if you switch the near vehicle check to the native and remove notifications and last stand logic.
 
-I created this because streaming dispatch.meta and dispatchtuning.ymt is not supported by FiveM so there was no way to 
-allow for AI police and also control how they spawn and behave.
-
-I will keep adding to this mod as I have time and inspiration, I've got some big ideas. 
 
 **KNOWN ISSUES:**
 - Police vehicles stolen by players will never despawn if they are occupied by a player at the time the script would usually delete the vehicle (when losing wanted level, or if the peds for that vehicle are too far away or dead).
@@ -52,8 +48,10 @@ If you find this project helpful, consider supporting me via PayPal
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=8UEUW7KYFSF48)
 
-Or 
+I created this because streaming dispatch.meta and dispatchtuning.ymt is not supported by FiveM so there was no way to 
+allow for AI police and also control how they spawn and behave.
 
+I will keep adding to this mod as I have time and inspiration, I've got some big ideas. 
 
 # INSTALL INSTRUCTIONS
 
