@@ -31,7 +31,9 @@ allow for AI police and also control how they spawn and behave.
 I will keep adding to this mod as I have time and inspiration, I've got some big ideas. 
 
 KNOWN ISSUES:
-- Despite everything I've tried sometimes the server fails to TaskWarpPedIntoVehicle properly and some vehicles will be missing some officers. Sometimes all officers fail to warp and a vehicle just sits empty. The far-away timer will remove the unit and allow a replacement to spawn after a certain time... It isn't perfect, but it works. This is rare in my experience but has been noticeable. The only other way I found to work around this was to spawn the units clientside but that opens up other issues. 
+- Police vehicles stolen by players will never despawn if they are occupied by a player at the time the script would usually delete the vehicle (when losing wanted level, or if the peds for that vehicle are too far away or dead).
+- ~Despite everything I've tried sometimes the server fails to TaskWarpPedIntoVehicle properly and some vehicles will be missing some officers. Sometimes all officers fail to warp and a vehicle just sits empty. The far-away timer will remove the unit and allow a replacement to spawn after a certain time... It isn't perfect, but it works. This is rare in my experience but has been noticeable. The only other way I found to work around this was to spawn the units clientside but that opens up other issues. ~ This has been rectified by checking if a driver occupies the vehicle, if no driver was warped in it deletes the vehicle entity and will try spawning another unit the next cycle. I optimized this by checking after the first ped attempt. I've found if the first one fails ALL the peds will fail to warp so there is no point in trying to spawn and warp the remaining officers into the vehicle. 
+
 
 # EXPORT
 
@@ -44,10 +46,16 @@ exports['fenix-police']:ApplyWantedLevel(wantedLevelHere) -- wanted level can be
 
 This script was created by me, Fenix, so I could play FiveM QB-Core multiplayer with my wife Rainbowicus. 
 
+# SUPPORT
+
+If you find this project helpful, consider supporting me via PayPal
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=8UEUW7KYFSF48)
+
 
 # INSTALL INSTRUCTIONS
 
-1) Edit qb-smallresources\client\ignore.lua
+**1)** Edit qb-smallresources\client\ignore.lua
 qb-smallresources has a client\ignore.lua that needs changes made to it to prevent it from disabling police services and allows this mod to handle them directly instead:
 
 a) For the following function comment out the block from SetAudioFlag down to the last RemoveVehiclesFromGeneratorsInArea
@@ -92,7 +100,9 @@ b) comment out this entire function, it will be handled by this mod instead
 ```
 
 
-2) Edit qb-smallresources\config.lua
+
+
+**2)** Edit qb-smallresources\config.lua
 
 a) By default it disables the hud component for wanted stars in this block
 
@@ -125,9 +135,13 @@ Config.BlacklistedPeds = {
 }
 ```
 
-3) Review config.lua and read all the comments about all the settings, change what you want.
 
-4) Make sure you add "ensure fenix-police" to your server.cfg. 
+
+**3)** Review config.lua and read all the comments about all the settings, change what you want.
+
+
+
+**4)** Make sure you add "ensure fenix-police" to your server.cfg. 
 
 
 
