@@ -1,4 +1,4 @@
-![Fenix Police Response]()
+# Fenix Police Response
 
 This mod enables AI police dispatch/wanted levels and replaces the base GTA V police dispatch system with something less punishing and more realistic. It is highly configurable and all configuration and code is thoroughly commented
 to facilitate end-user modifcation. You could configure this to be even more brutal than base-game if you wanted, or even easier. The idea was to have AI police for a small RP server just for your friends where having a bunch of player police was not possible. 
@@ -51,6 +51,8 @@ This script was created by me, Fenix, so I could play FiveM QB-Core multiplayer 
 If you find this project helpful, consider supporting me via PayPal
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=8UEUW7KYFSF48)
+
+Or 
 
 
 # INSTALL INSTRUCTIONS
