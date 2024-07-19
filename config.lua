@@ -4,7 +4,7 @@ Config = {}
 -- **CONFIG SETTINGS** --
 
 -- Can enable this to print debug messages to client consoles and server console.
-Config.isDebug = true 
+Config.isDebug = false 
 
 
 -- DISPATCH SERVICES --

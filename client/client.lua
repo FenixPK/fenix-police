@@ -37,6 +37,7 @@
 
 
 
+
 -- ****BEGIN CODE**** --
 
 -- Get the QBCore object so we can do notifications, check for nearest vehicle using their improved call, and handle isDying and isLastStand situations for the player. 
@@ -767,7 +768,6 @@ local function maintainPoliceUnits(wantedLevel)
     -- Do Ground Units --
     local spawnGroundUnits = false
     if playerVeh ~= 0 then
-        if Config.isDebug then print('Player in vehicle') end
         if IsThisModelAPlane(GetEntityModel(playerVeh)) then
             -- Player is in a plane
             spawnGroundUnits = Config.spawnGroundUnitsInPlane
@@ -805,7 +805,6 @@ local function maintainPoliceUnits(wantedLevel)
     local heliSpawnTable = nil
 
     if playerVeh ~= 0 then
-        if Config.isDebug then print('Player in vehicle') end
         if IsThisModelAPlane(GetEntityModel(playerVeh)) then
             -- Player is in a plane
             -- We don't spawn helis anymore if player is in a plane.
@@ -1857,7 +1856,31 @@ Citizen.CreateThread(function()
             
 
             if QBCore.Functions.GetPlayerData().metadata['isdead'] or QBCore.Functions.GetPlayerData().metadata['inlaststand'] then
-                ClearPlayerWantedLevel(PlayerId())
+
+                local vehicle = GetVehiclePedIsIn(playerPed, false)
+
+                if vehicle and vehicle ~= 0 then 
+                    local seats = GetVehicleModelNumberOfSeats(GetEntityModel(vehicle))
+                    local otherPeds = false
+
+                    for seat = -1, seats - 2 do
+                        local pedInSeat = GetPedInVehicleSeat(vehicle, seat)
+                        if pedInSeat ~= 0 and pedInSeat ~= playerPed then
+                            otherPeds = true
+                            break
+                        end
+                    end
+
+                    if otherPeds then
+                        -- If there are other players in the vehicle we don't want to clear wanted level or it will affect all players in the vehicle!
+                    else
+                        ClearPlayerWantedLevel(PlayerId())
+                    end
+                else
+                    ClearPlayerWantedLevel(PlayerId())
+                end
+                
+                
             else
 
                 wantedTimer = 0
