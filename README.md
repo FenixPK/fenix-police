@@ -3,6 +3,8 @@
 This mod enables AI police dispatch/wanted levels and replaces the base GTA V police dispatch system with something less punishing and more realistic. It is highly configurable and all configuration and code is thoroughly commented
 to facilitate end-user modifcation. You could configure this to be even more brutal than base-game if you wanted, or even easier. The idea was to have AI police for a small RP server just for your friends where having a bunch of player police was not possible. 
 
+<img src="img/FenixPolice001.jpg" alt="Fenix Police 001" width="500"/>
+
 **FEATURES:**
 - Config option to only enable AI police if player police are not online. You can configure the number of player police required. And set whether they have to be onDuty to count toward the total. 
 - Custom police loadouts per unit spawned, loadouts are randomized and include a spawnChance weighting to make them more or less likely. 
@@ -144,5 +146,8 @@ Config.BlacklistedPeds = {
 **4)** Make sure you add "ensure fenix-police" to your server.cfg. 
 
 
+<img src="img/FenixPolice002.jpg" alt="Fenix Police 001" width="500"/>
 
+<img src="img/FenixPolice003.jpg" alt="Fenix Police 001" width="500"/>
 
+<img src="img/FenixPolice004.jpg" alt="Fenix Police 001" width="500"/>
