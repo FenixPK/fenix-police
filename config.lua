@@ -26,7 +26,13 @@ Config.PoliceJobsToCheck = {
     -- Can check additional police jobs by adding to this table.
 }
 
--- This removes vehicles from generating at PDs when police are online. 
+-- Are players with police jobs in the list above protected from becoming wanted?
+Config.PoliceWantedProtection = true
+
+-- 1.0.1 Are players treated as police (and protected from being wanted) only when on-duty?
+Config.PlayerPoliceOnlyOnDuty = false
+
+-- 1.0.1 This removes vehicles from generating at PDs when police are online. 
 Config.RemoveVehicleGenerators = true
 
 -- This sets which dispatch services the game will handle using base game logic.

@@ -211,12 +211,38 @@ end
 local function givePedLoadout(ped, loadout)
     -- Select a weighted random primary weapon
     local primaryWeapon = selectWeightedRandom(loadout.primaryWeapons)
-    GiveWeaponToPed(ped, GetHashKey(primaryWeapon), 999, false, false)
+
+    local waitCount = 0
+    local currentWeapon = GetCurrentPedWeapon(ped) 
+    
+    while currentWeapon ~= GetHashKey(primaryWeapon) and waitCount < Config.spawnWaitCount do
+        if #loadout.secondaryWeapons > 0 then
+            GiveWeaponToPed(ped, GetHashKey(primaryWeapon), 999, false, false)
+        else
+            GiveWeaponToPed(ped, GetHashKey(primaryWeapon), 999, false, true) -- force in hand if only weapon
+        end
+        Wait(100)
+        currentWeapon = GetCurrentPedWeapon(ped) 
+        waitCount = waitCount + 1
+    end
 
     -- Randomly select a secondary weapon based on secondaryChance
     if math.random() < loadout.secondaryChance and #loadout.secondaryWeapons > 0 then
         local secondaryWeapon = selectWeightedRandom(loadout.secondaryWeapons)
-        GiveWeaponToPed(ped, GetHashKey(secondaryWeapon), 999, false, false)
+
+        waitCount = 0
+        currentWeapon = GetCurrentPedWeapon(ped) 
+        
+        while currentWeapon ~= GetHashKey(secondaryWeapon) and waitCount < Config.spawnWaitCount do
+            GiveWeaponToPed(ped, GetHashKey(secondaryWeapon), 999, false, true)  
+            Wait(100)
+            currentWeapon = GetCurrentPedWeapon(ped) 
+            waitCount = waitCount + 1
+        end
+
+    else
+        
+        
     end
 
     -- Add body armor based on armorChance

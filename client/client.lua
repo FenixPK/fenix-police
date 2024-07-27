@@ -32,6 +32,10 @@
 --
 -- Add Gangs, Territories, and takeovers. Gang wars! Players could hire their own peds etc. This might need to be a separate mod.
 
+-- USER REQUESTS:
+-- Add command to manually activate/de-activate AI police that police-job users can use.
+-- Prevent Police Job users from being wanted by this script. 
+
 
 
 
@@ -73,20 +77,26 @@ local disableAIPolice = nil -- Toggle to turn AI police response on and off if p
 -- EXPORTS --
 function ApplyWantedLevel(level)
     Citizen.CreateThread(function()
-        local wantedLevel = GetPlayerWantedLevel(PlayerId())
-        local newWanted = wantedLevel + level
-        if newWanted > 5 then
-            newWanted = 5
+        if Config.PoliceWantedProtection and isPlayerPoliceOfficer then
+            -- If wanted protection is enabled and the player is a cop we skip doing anything
+        else
+            -- Apply wanted
+            local wantedLevel = GetPlayerWantedLevel(PlayerId())
+            local newWanted = wantedLevel + level
+            if newWanted > 5 then
+                newWanted = 5
+            end
+            ClearPlayerWantedLevel(PlayerId())
+            SetPlayerWantedLevelNow(PlayerId(),false)
+            Citizen.Wait(10)
+            SetPlayerWantedLevel(PlayerId(),newWanted,false)
+            SetPlayerWantedLevelNow(PlayerId(),false)
+            local playerVehicle = GetVehiclePedIsIn(PlayerPedId(), true)
+            if playerVehicle ~= 0 then
+                SetVehicleIsWanted(playerVehicle, true)
+            end
         end
-        ClearPlayerWantedLevel(PlayerId())
-        SetPlayerWantedLevelNow(PlayerId(),false)
-        Citizen.Wait(10)
-        SetPlayerWantedLevel(PlayerId(),newWanted,false)
-        SetPlayerWantedLevelNow(PlayerId(),false)
-        local playerVehicle = GetVehiclePedIsIn(PlayerPedId(), true)
-        if playerVehicle ~= 0 then
-            SetVehicleIsWanted(playerVehicle, true)
-        end
+        
     end)
 end
 exports('ApplyWantedLevel', ApplyWantedLevel)
@@ -94,6 +104,37 @@ exports('ApplyWantedLevel', ApplyWantedLevel)
 -- This allows you to set a wanted level from a script action that the normal GTA V code would not consider.
 -- For eg. a robery script, chop-shop script, car theft mission etc. might call this to set a wanted level.
 --  exports['fenix-police']:ApplyWantedLevel(wantedLevelHere)
+
+function SetWantedLevel(level)
+    Citizen.CreateThread(function()
+        if Config.PoliceWantedProtection and isPlayerPoliceOfficer then
+            -- If wanted protection is enabled and the player is a cop we skip doing anything
+        else
+            -- Apply wanted
+            local wantedLevel = GetPlayerWantedLevel(PlayerId())
+            local newWanted = level
+            if level < wantedLevel then
+                newWanted = wantedLevel
+            else
+                newWanted = level
+            end
+            ClearPlayerWantedLevel(PlayerId())
+            SetPlayerWantedLevelNow(PlayerId(),false)
+            Citizen.Wait(10)
+            SetPlayerWantedLevel(PlayerId(),newWanted,false)
+            SetPlayerWantedLevelNow(PlayerId(),false)
+            local playerVehicle = GetVehiclePedIsIn(PlayerPedId(), true)
+            if playerVehicle ~= 0 then
+                SetVehicleIsWanted(playerVehicle, true)
+            end
+        end
+    end)
+end
+exports('SetWantedLevel', SetWantedLevel)
+-- Use this in other scripts by calling the function like below. 
+-- This allows you to set a wanted level from a script action that the normal GTA V code would not consider.
+-- For eg. a robery script, chop-shop script, car theft mission etc. might call this to set a wanted level.
+--  exports['fenix-police']:SetWantedLevel(wantedLevelHere)
 
 
 
@@ -1805,6 +1846,7 @@ local function UpdateDispatchServices()
             EnableDispatchService(i, toggle)
         end
 
+
         -- Always update evasion times for when this mod handles police.
         for i, evasionTime in ipairs(Config.evasionTimes) do
             SetWantedLevelHiddenEvasionTime(PlayerId(), i, evasionTime)
@@ -1836,6 +1878,32 @@ RegisterNetEvent('fenix-police:updateCopsOnline', function(polCount)
     end
 end)
 
+-- checks if a player is one of the police jobs configured and returns true if they are.
+local function isPlayerPoliceOfficer()
+
+    local playerData = QBCore.Functions.GetPlayerData()
+    local isPolice = false
+
+    
+    for _, job in ipairs(Config.PoliceJobsToCheck) do
+        if playerData.job.name == job.jobName then
+            -- Check if configured to only count on-duty players?
+            if Config.PlayerPoliceOnlyOnDuty then
+                if playerData.job.onduty then
+                    isPolice = true
+                else
+                    isPolice = false
+                end
+            else
+                isPolice = true
+            end
+        end
+    end
+
+    return isPolice
+
+end
+
 
     
 
@@ -1852,6 +1920,15 @@ Citizen.CreateThread(function()
         local wantedLevel = GetPlayerWantedLevel(PlayerId())
         
         if wantedLevel > 0 then
+
+            -- If police are protected we should check if player is a cop and prevent being wanted
+            if Config.PoliceWantedProtection then
+                local playerIsOfficer = isPlayerPoliceOfficer()
+                if playerIsOfficer == true then
+                    wantedLevel = 0
+                    ClearPlayerWantedLevel(PlayerId())
+                end
+            end
 
             
 

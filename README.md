@@ -35,9 +35,10 @@ In theory, it could be removed if you switch the near vehicle check to the nativ
 
 # EXPORT
 
-Use this export call 
+Use these export calls
 ```lua
 exports['fenix-police']:ApplyWantedLevel(wantedLevelHere) -- wanted level can be 1 to 5, this ADDS the wantedLevelHere value to the existing wanted level!
+exports['fenix-police']:SetWantedLevel(wantedLevelHere) -- wanted level can be 1 to 5, this SETS the players wanted level to the wantedLevelHere value if it is higher than the current wanted level. 
 ```
 
 # CREDITS
