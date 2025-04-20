@@ -1,4 +1,4 @@
-# Fenix Police Response 1.0.0
+# Fenix Police Response 1.0.1
 
 This mod enables AI police dispatch/wanted levels and replaces the base GTA V police dispatch system with something less punishing and more realistic. It is highly configurable and all configuration and code is thoroughly commented
 to facilitate end-user modification. You could configure this to be even more brutal than base-game if you wanted, or even easier. The idea was to have AI police for a small RP server just for your friends where having a bunch of player police was not possible. 
@@ -22,6 +22,7 @@ to facilitate end-user modification. You could configure this to be even more br
   I may consider changing this some day but I like the difficulty scaling with this. 
 - Police are spawned serverside, then their networkIDs are sent back to the client that requested police so they can be controlled and maintained. They should not migrate to other clients, and the distance culling is high so they can still be controlled from far away. This means units will be properly sycned across clients and you will see police chasing other players. 
 - Stolen police vehicles will not de-spawn if occupied by a player at the time the script tries to clean them up (due to peds being dead, peds being far away, or losing wanted stars). So they wont disappear if you manage to steal one mid chase. However, they will never despawn if this happens. I plan to add logic that removes them once the player abandons them for a certain time/distance in the future. 
+- Players with police jobs can be protected from becoming wanted, option to apply this protection only when on-duty. 
 
 **REQUIREMENTS:**
 
@@ -40,6 +41,35 @@ Use these export calls
 exports['fenix-police']:ApplyWantedLevel(wantedLevelHere) -- wanted level can be 1 to 5, this ADDS the wantedLevelHere value to the existing wanted level!
 exports['fenix-police']:SetWantedLevel(wantedLevelHere) -- wanted level can be 1 to 5, this SETS the players wanted level to the wantedLevelHere value if it is higher than the current wanted level. 
 ```
+
+# QBCore default robbery calls
+This script introduces a dynamic wanted level system based on the location where a crime is committed. It works by triggering an event when a robbery alert is sent, allowing you to assign different wanted levels depending on the coordinates.
+
+For this to work add the Trigger event to
+    -RegisterNetEvent('police:server:policeAlert', function(text)
+    -in [qb]\qb-policejob\server\main.lua
+And 
+    -RegisterNetEvent('qb-storerobbery:server:callCops', function(type, safe, streetLabel, coords)
+    -in [qb]\qb-storerobbery\server\main.lua
+
+More locations can be added to config.lua
+
+Example 
+RegisterNetEvent('police:server:policeAlert', function(text)
+    
+    local src = source
+    local ped = GetPlayerPed(src)
+    local coords = GetEntityCoords(ped)
+    local players = QBCore.Functions.GetQBPlayers()
+    local alertData = { title = Lang:t('info.new_call'), coords = { x = coords.x, y = coords.y, z = coords.z }, description = text }
+    for _, v in pairs(players) do
+        if v and v.PlayerData.job.type == 'leo' and v.PlayerData.job.onduty then
+            TriggerClientEvent('qb-phone:client:addPoliceAlert', v.PlayerData.source, alertData)
+            TriggerClientEvent('police:client:policeAlert', v.PlayerData.source, coords, text)
+        end
+    end
+    TriggerEvent('fenix:server:trigger', source, alertData)
+end)
 
 # CREDITS
 
