@@ -44,14 +44,14 @@ exports['fenix-police']:SetWantedLevel(wantedLevelHere) -- wanted level can be 1
 
 # QBCore default robbery calls
 This script introduces a dynamic wanted level system based on the location where a crime is committed. It works by triggering an event when a robbery alert is sent, allowing you to assign different wanted levels depending on the coordinates.
-
+```lua
 For this to work add the Trigger event to
-    -RegisterNetEvent('police:server:policeAlert', function(text)
-    -in [qb]\qb-policejob\server\main.lua
+    RegisterNetEvent('police:server:policeAlert', function(text)
+    in [qb]\qb-policejob\server\main.lua
 And 
-    -RegisterNetEvent('qb-storerobbery:server:callCops', function(type, safe, streetLabel, coords)
-    -in [qb]\qb-storerobbery\server\main.lua
-
+    RegisterNetEvent('qb-storerobbery:server:callCops', function(type, safe, streetLabel, coords)
+    in [qb]\qb-storerobbery\server\main.lua
+```
 More locations can be added to config.lua
 
 Example 
