@@ -42,6 +42,35 @@ exports['fenix-police']:ApplyWantedLevel(wantedLevelHere) -- wanted level can be
 exports['fenix-police']:SetWantedLevel(wantedLevelHere) -- wanted level can be 1 to 5, this SETS the players wanted level to the wantedLevelHere value if it is higher than the current wanted level. 
 ```
 
+# QBCore default robbery calls
+This script introduces a dynamic wanted level system based on the location where a crime is committed. It works by triggering an event when a robbery alert is sent, allowing you to assign different wanted levels depending on the coordinates.
+```lua
+For this to work add the Trigger event to
+    RegisterNetEvent('police:server:policeAlert', function(text)
+    in [qb]\qb-policejob\server\main.lua
+And 
+    RegisterNetEvent('qb-storerobbery:server:callCops', function(type, safe, streetLabel, coords)
+    in [qb]\qb-storerobbery\server\main.lua
+```
+More locations can be added to config.lua
+
+Example 
+RegisterNetEvent('police:server:policeAlert', function(text)
+    
+    local src = source
+    local ped = GetPlayerPed(src)
+    local coords = GetEntityCoords(ped)
+    local players = QBCore.Functions.GetQBPlayers()
+    local alertData = { title = Lang:t('info.new_call'), coords = { x = coords.x, y = coords.y, z = coords.z }, description = text }
+    for _, v in pairs(players) do
+        if v and v.PlayerData.job.type == 'leo' and v.PlayerData.job.onduty then
+            TriggerClientEvent('qb-phone:client:addPoliceAlert', v.PlayerData.source, alertData)
+            TriggerClientEvent('police:client:policeAlert', v.PlayerData.source, coords, text)
+        end
+    end
+    TriggerEvent('fenix:server:trigger', source, alertData)
+end)
+
 # CREDITS
 
 This script was created by me, Fenix, so I could play FiveM QB-Core multiplayer with my wife Rainbowicus. 

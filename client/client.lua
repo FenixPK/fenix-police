@@ -105,6 +105,11 @@ exports('ApplyWantedLevel', ApplyWantedLevel)
 -- For eg. a robery script, chop-shop script, car theft mission etc. might call this to set a wanted level.
 --  exports['fenix-police']:ApplyWantedLevel(wantedLevelHere)
 
+RegisterNetEvent('fenix-police:client:ApplyWantedLevel', function(level)
+    exports['fenix-police']:ApplyWantedLevel(level)
+end)
+
+
 function SetWantedLevel(level)
     Citizen.CreateThread(function()
         if Config.PoliceWantedProtection and isPlayerPoliceOfficer then
@@ -131,6 +136,10 @@ function SetWantedLevel(level)
     end)
 end
 exports('SetWantedLevel', SetWantedLevel)
+
+RegisterNetEvent('fenix-police:client:SetWantedLevel', function(level)
+    exports['fenix-police']:SetWantedLevel(level)
+end)
 -- Use this in other scripts by calling the function like below. 
 -- This allows you to set a wanted level from a script action that the normal GTA V code would not consider.
 -- For eg. a robery script, chop-shop script, car theft mission etc. might call this to set a wanted level.
@@ -2096,6 +2105,7 @@ CreateThread(function ()
         end
     end
 end)
+
 
 
 

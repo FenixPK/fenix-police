@@ -765,10 +765,88 @@ AddEventHandler('spawnPoliceAirNet', function(wantedLevel, playerCoords, spawnPo
 
     end
 
-
     -- Return the netIDs to the client
     TriggerClientEvent('spawnPoliceAirNetResponse', src, vehNetID, officers)
 end)
 
 
+--Added wanted levels for basic QB robbery etc
 
+--used to get the players near an alert
+function GetPlayersInRadius(centerCoords, radius)
+    local playersInRadius = {}
+
+    for _, playerId in ipairs(GetPlayers()) do
+        local ped = GetPlayerPed(playerId)
+        local playerCoords = GetEntityCoords(ped)
+
+        local dist = #(vector3(centerCoords.x, centerCoords.y, centerCoords.z) - playerCoords)
+        if dist <= radius then
+            table.insert(playersInRadius, playerId)
+        end
+    end
+
+    return playersInRadius
+end
+
+--Used to round the location
+function round(val, decimal)
+    local power = 10 ^ (decimal or 0)
+    return math.floor(val * power + 0.5) / power
+end
+--This function gets the wanted level from the coordinates in the config file - this way you can set a different wanted level based on the crime being commited
+function GetWantedLevelFromCoords(alertCoords)
+    local coords = vector3(
+        round(alertCoords.x, 2),
+        round(alertCoords.y, 2),
+        round(alertCoords.z, 2)
+    )   
+
+    print("Corrodinates " .. coords)
+    for index, location in pairs(Config.locations) do
+        local locCoords = location[1]  -- correctly getting the vector3
+    print("loccoords ".. locCoords)
+        if locCoords then
+            local distance = #(coords - locCoords)
+            print(string.format("Checking location %d: distance = %.2f", index, distance))
+
+            if distance < 20 then -- adjust this threshold as needed
+                return location.wanted
+            end
+        else
+            print("Warning: No coords found for location index " .. tostring(index))
+        end
+    end
+
+    return nil
+end
+
+--Uesed to receive alerts from qbpolice trigger fuction
+--Needs to be added to QB-Police police:server:policeAlert
+RegisterNetEvent('fenix:server:trigger')
+AddEventHandler('fenix:server:trigger', function(pdata,alertData)
+    
+    if alertData.coords then
+        local wantedlevel = GetWantedLevelFromCoords({x = alertData.coords.x, y = alertData.coords.y, z = alertData.coords.z })
+    
+        if wantedlevel then
+            print("Wanted Level for this location is " .. wantedlevel)
+        else
+            print("No wanted level for this locaiton found.. setting to 1")
+            wantedlevel = 0
+        end 
+
+        print("getting nearbyplayers")
+        local nearbyPlayers = GetPlayersInRadius({ x = alertData.coords.x, y = alertData.coords.y, z = alertData.coords.z }, 10.0)
+        print("Nearby players: " .. json.encode(nearbyPlayers))   
+
+        for _, playerId in ipairs(nearbyPlayers) do
+            print("Player nearby: " .. tostring(playerId))
+        
+            -- You can get more info about the player
+            local ped = GetPlayerPed(playerId)
+            print("Player " .. playerId .. " triggered police, applying wanted level: " .. wantedlevel)
+            TriggerClientEvent('fenix-police:client:SetWantedLevel', playerId, wantedlevel)
+        end
+    end  
+end)
