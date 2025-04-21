@@ -1,4 +1,4 @@
-# Fenix Police Response 1.0.1
+# Fenix Police Response 1.0.2
 
 This mod enables AI police dispatch/wanted levels and replaces the base GTA V police dispatch system with something less punishing and more realistic. It is highly configurable and all configuration and code is thoroughly commented
 to facilitate end-user modification. You could configure this to be even more brutal than base-game if you wanted, or even easier. The idea was to have AI police for a small RP server just for your friends where having a bunch of player police was not possible. 
@@ -44,6 +44,9 @@ exports['fenix-police']:SetWantedLevel(wantedLevelHere) -- wanted level can be 1
 
 # QBCore default robbery calls
 This script introduces a dynamic wanted level system based on the location where a crime is committed. It works by triggering an event when a robbery alert is sent, allowing you to assign different wanted levels depending on the coordinates.
+
+Thanks to Tunsworthy for this addition!
+
 ```lua
 For this to work add the Trigger event to
     RegisterNetEvent('police:server:policeAlert', function(text)
